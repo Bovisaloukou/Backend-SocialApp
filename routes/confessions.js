@@ -61,9 +61,9 @@ router.post('/confessions/:id/replies', async (req, res) => {
 });
 
 // Route pour ajouter une réponse à une confession
-router.post('/api/confessions/:confessionId/replies', confessionController.addReply);
+router.post('/confessions/:confessionId/replies', confessionController.addReply);
 
 // Route pour ajouter une sous-réponse à une réponse spécifique d'une confession
-router.post('/api/confessions/:confessionId/replies/:replyId', confessionController.addSubReply);
+router.post('/confessions/:confessionId/replies/:replyId', confessionController.addSubReply);
 
 module.exports = router;
