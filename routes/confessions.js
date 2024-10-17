@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Confession = require('../models/Confession');
+const confessionController = require('../controllers/confessionController');
 
 // Créer une nouvelle confession
 router.post('/confessions', async (req, res) => {
@@ -58,5 +59,11 @@ router.post('/confessions/:id/replies', async (req, res) => {
         res.status(500).json({ error: 'Erreur lors de l\'ajout de la réponse' });
     }
 });
+
+// Route pour ajouter une réponse à une confession
+router.post('/api/confessions/:confessionId/replies', confessionController.addReply);
+
+// Route pour ajouter une sous-réponse à une réponse spécifique d'une confession
+router.post('/api/confessions/:confessionId/replies/:replyId', confessionController.addSubReply);
 
 module.exports = router;
