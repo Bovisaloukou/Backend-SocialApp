@@ -8,6 +8,6 @@ const eventController = require('../controllers/eventController');
 router.post('/api/events', auth, eventController.createEvent);
 
 // Route pour obtenir tous les événements (publics et privés où l'utilisateur est invité)
-router.get('/api/events', auth, eventController.getAllEvents);  // Ajout de la route GET /events
+router.get('/events', auth, eventController.getAllEvents);  // Ajout de la route GET /events
 
 module.exports = router;
