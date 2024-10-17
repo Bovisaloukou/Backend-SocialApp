@@ -26,6 +26,7 @@ router.get('/confessions', async (req, res) => {
 
         res.status(200).json(confessions);
     } catch (error) {
+        console.error('Erreur lors de la récupération des confessions:', error);  // Affiche l'erreur dans la console
         res.status(500).json({ error: 'Erreur lors de la récupération des confessions' });
     }
 });
