@@ -9,13 +9,18 @@ const eventRoutes = require('./routes/eventRoutes');
 const confessionRoutes = require('./routes/confessions');  // Importer les routes des confessions
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Serveur démarré sur http://localhost:${PORT}`);
-});
+// Configuration de CORS
+const corsOptions = {
+    origin: 'https://frontend-social-app-eight.vercel.app',  // Autoriser uniquement les requêtes provenant de ton frontend sur Vercel
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Méthodes HTTP autorisées
+    credentials: true,  // Permettre les cookies si nécessaire
+  };
+
+// Appliquer CORS avec les options configurées
+app.use(cors(corsOptions));
+
+app.use(express.json());
 
 connectDB(); // Connexion à MongoDB
 
@@ -23,6 +28,11 @@ connectDB(); // Connexion à MongoDB
 app.use('/users', userRoutes);
 app.use('/api', eventRoutes);
 app.use('/api', confessionRoutes);  // Utiliser les routes des confessions
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+});
 
 // Route d'accueil
 app.get('/', (req, res) => {
