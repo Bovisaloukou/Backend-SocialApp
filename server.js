@@ -21,7 +21,7 @@ connectDB(); // Connexion à MongoDB
 
 // Utiliser les routes
 app.use('/users', userRoutes);
-app.use('/events', eventRoutes);
+app.use('/api', eventRoutes);
 app.use('/api', confessionRoutes);  // Utiliser les routes des confessions
 
 // Route d'accueil
