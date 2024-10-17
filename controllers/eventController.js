@@ -40,6 +40,10 @@ exports.createEvent = async (req, res) => {
         console.log(req.body);  // Vérifiez les données reçues dans la requête
 
         const { title, description, date, location, isPrivate, invitations, invitedUsers = [] } = req.body;
+        // Valider que tous les champs requis sont présents
+        if (!title || !description || !date || !location) {
+            return res.status(400).json({ error: 'Tous les champs obligatoires ne sont pas remplis' });
+        }
         const accessCode = isPrivate ? generateAccessCode() : null;
 
         const newEvent = new Event({
