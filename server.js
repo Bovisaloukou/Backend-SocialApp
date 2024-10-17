@@ -6,6 +6,7 @@ require('dotenv').config();  // Charger les variables d'environnement
 const connectDB = require('./config/db'); // Connexion à MongoDB
 const userRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const confessionRoutes = require('./routes/confessions');  // Importer les routes des confessions
 
 const app = express();
 app.use(cors());
@@ -21,6 +22,7 @@ connectDB(); // Connexion à MongoDB
 // Utiliser les routes
 app.use('/users', userRoutes);
 app.use('/events', eventRoutes);
+app.use('/api', confessionRoutes);  // Utiliser les routes des confessions
 
 // Route d'accueil
 app.get('/', (req, res) => {
