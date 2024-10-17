@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const replySchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    replies: [this], // Les sous-réponses peuvent aussi être de type "replySchema"
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Référencer d'autres réponses
 });
 
 const confessionSchema = new mongoose.Schema({
@@ -14,9 +14,10 @@ const confessionSchema = new mongoose.Schema({
         of: Number,
         default: {}
     },
-    replies: [replySchema] // La confession a une liste de réponses
+    replies: [replySchema]  // Les confessions ont une liste de réponses
 });
 
+const Reply = mongoose.model('Reply', replySchema);
 const Confession = mongoose.model('Confession', confessionSchema);
 
-module.exports = Confession;
+module.exports = { Confession, Reply };

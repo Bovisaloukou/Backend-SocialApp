@@ -1,4 +1,5 @@
 const express = require('express');
+const Joi = require('joi');
 const router = express.Router();
 const Confession = require('../models/Confession');
 const confessionController = require('../controllers/confessionController');
@@ -18,17 +19,54 @@ router.post('/confessions', async (req, res) => {
 // Récupérer toutes les confessions
 router.get('/confessions', async (req, res) => {
     try {
-        const confessions = await Confession.find().sort({ createdAt: -1 });
+        const confessions = await Confession.find()
+            .sort({ createdAt: -1 })
+            .select('content createdAt reactions')  // Limiter les champs renvoyés
+            .lean();  // Utiliser lean() pour des objets plats
+
         res.status(200).json(confessions);
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la récupération des confessions' });
     }
 });
 
+// Route pour récupérer les réponses avec pagination
+router.get('/confessions/:confessionId/replies', async (req, res) => {
+    try {
+        const { confessionId } = req.params;
+        const limit = parseInt(req.query.limit) || 10;  // Limite par défaut de 10 réponses
+        const skip = parseInt(req.query.skip) || 0;     // Décalage pour la pagination
+
+        const confession = await Confession.findById(confessionId)
+            .populate({
+                path: 'replies',
+                options: { limit, skip, sort: { createdAt: -1 } }
+            });
+        
+        if (!confession) {
+            return res.status(404).json({ error: 'Confession non trouvée' });
+        }
+
+        res.status(200).json(confession.replies);
+    } catch (error) {
+        res.status(500).json({ error: 'Erreur lors de la récupération des réponses' });
+    }
+});
+
+// Validation des réactions
+const reactionSchema = Joi.object({
+    reaction: Joi.string().valid('😂', '❤️', '👍', '😮').required()
+});
+
 // Réagir à une confession
 router.post('/confessions/:id/reactions', async (req, res) => {
     try {
-        const { reaction } = req.body;  // Exemple: { reaction: '😂' }
+        const { error } = reactionSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({ error: error.details[0].message });
+        }
+
+        const { reaction } = req.body;
         const confession = await Confession.findById(req.params.id);
 
         if (!confession) return res.status(404).json({ error: 'Confession non trouvée' });
