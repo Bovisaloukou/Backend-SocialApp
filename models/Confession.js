@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
-// Schéma pour les réponses
+
+// Schéma des sous-réponses
 const replySchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Référencer d'autres réponses
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Sous-réponses
 });
-// Schéma pour les confessions
+
+// Schéma des confessions
 const confessionSchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
@@ -14,11 +16,11 @@ const confessionSchema = new mongoose.Schema({
         of: Number,
         default: {}
     },
-    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Réponses
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Réponses (assurez-vous que replies est un tableau)
 });
+
 // Modèles Mongoose
 const Confession = mongoose.model('Confession', confessionSchema);
 const Reply = mongoose.model('Reply', replySchema);
 
-// Exporter les modèles
 module.exports = { Confession, Reply };
