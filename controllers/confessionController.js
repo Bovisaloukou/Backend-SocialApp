@@ -1,4 +1,4 @@
-const Confession = require('../models/Confession');
+const { Confession, Reply } = require('../models/Confession');
 
 // Ajouter une réponse à une confession
 exports.addReply = async (req, res) => {
@@ -7,16 +7,19 @@ exports.addReply = async (req, res) => {
         const { content } = req.body;
 
         const confession = await Confession.findById(confessionId);
-        if (!confession) {
-            return res.status(404).json({ error: 'Confession non trouvée' });
-        }
+        if (!confession) return res.status(404).json({ error: 'Confession non trouvée' });
 
-        // Ajouter une nouvelle réponse
-        confession.replies.push({ content });
+        // Créer une nouvelle réponse
+        const newReply = new Reply({ content });
+        await newReply.save();
+
+        // Ajouter la réponse à la confession
+        confession.replies.push(newReply._id);
         await confession.save();
 
-        res.status(201).json(confession);
+        res.status(201).json(newReply);
     } catch (error) {
+        console.error('Erreur lors de l\'ajout de la réponse :', error);
         res.status(500).json({ error: 'Erreur lors de l\'ajout de la réponse' });
     }
 };
@@ -27,23 +30,19 @@ exports.addSubReply = async (req, res) => {
         const { confessionId, replyId } = req.params;
         const { content } = req.body;
 
-        // Rechercher la confession par ID
+        // Trouver la confession
         const confession = await Confession.findById(confessionId);
-        if (!confession) {
-            return res.status(404).json({ error: 'Confession non trouvée' });
-        }
+        if (!confession) return res.status(404).json({ error: 'Confession non trouvée' });
 
-        // Rechercher la réponse parent par ID dans les réponses de la confession
+        // Trouver la réponse parent
         const parentReply = await Reply.findById(replyId);
-        if (!parentReply) {
-            return res.status(404).json({ error: 'Réponse parent non trouvée' });
-        }
+        if (!parentReply) return res.status(404).json({ error: 'Réponse parent non trouvée' });
 
-        // Créer une nouvelle sous-réponse
+        // Créer la sous-réponse
         const newReply = new Reply({ content });
         await newReply.save();
 
-        // Ajouter cette sous-réponse à la réponse parent
+        // Ajouter la sous-réponse à la réponse parent
         parentReply.replies.push(newReply._id);
         await parentReply.save();
 

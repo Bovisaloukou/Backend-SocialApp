@@ -82,7 +82,7 @@ router.post('/confessions/:id/reactions', async (req, res) => {
     }
 });
 
-// Ajouter une réponse anonyme
+// Ajouter une réponse anonyme à une confession
 router.post('/confessions/:id/replies', async (req, res) => {
     try {
         const { content } = req.body;
@@ -90,11 +90,17 @@ router.post('/confessions/:id/replies', async (req, res) => {
 
         if (!confession) return res.status(404).json({ error: 'Confession non trouvée' });
 
-        confession.replies.push({ content });
+        // Créer une nouvelle réponse
+        const newReply = new Reply({ content });
+        await newReply.save();
+
+        // Ajouter cette réponse à la confession
+        confession.replies.push(newReply._id);
         await confession.save();
 
         res.status(200).json(confession);
     } catch (error) {
+        console.error('Erreur lors de l\'ajout de la réponse :', error);
         res.status(500).json({ error: 'Erreur lors de l\'ajout de la réponse' });
     }
 });
@@ -102,7 +108,37 @@ router.post('/confessions/:id/replies', async (req, res) => {
 // Route pour ajouter une réponse à une confession
 router.post('/confessions/:confessionId/replies', confessionController.addReply);
 
-// Route pour ajouter une sous-réponse à une réponse spécifique d'une confession
-router.post('/confessions/:confessionId/replies/:replyId', confessionController.addSubReply);
+// Ajouter une sous-réponse à une réponse spécifique d'une confession
+router.post('/confessions/:confessionId/replies/:replyId', async (req, res) => {
+    try {
+
+        console.log('Contenu de la requête :', req.body);
+        console.log('Confession trouvée :', confession);
+        console.log('Réponse parent trouvée :', parentReply);
+
+        const { content } = req.body;
+
+        // Trouver la confession
+        const confession = await Confession.findById(req.params.confessionId);
+        if (!confession) return res.status(404).json({ error: 'Confession non trouvée' });
+
+        // Trouver la réponse parent
+        const parentReply = await Reply.findById(req.params.replyId);
+        if (!parentReply) return res.status(404).json({ error: 'Réponse parent non trouvée' });
+
+        // Créer la sous-réponse
+        const newReply = new Reply({ content });
+        await newReply.save();
+
+        // Ajouter la sous-réponse à la réponse parent
+        parentReply.replies.push(newReply._id);
+        await parentReply.save();
+
+        res.status(201).json(newReply);
+    } catch (error) {
+        console.error('Erreur lors de l\'ajout de la sous-réponse :', error);
+        res.status(500).json({ error: 'Erreur lors de l\'ajout de la sous-réponse' });
+    }
+});
 
 module.exports = router;
