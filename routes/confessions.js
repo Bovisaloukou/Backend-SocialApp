@@ -1,7 +1,7 @@
 const express = require('express');
 const Joi = require('joi');
 const router = express.Router();
-const Confession = require('../models/Confession');
+const { Confession } = require('../models/Confession'); // Import correct du modèle Confession
 const confessionController = require('../controllers/confessionController');
 
 // Créer une nouvelle confession
@@ -20,9 +20,9 @@ router.post('/confessions', async (req, res) => {
 router.get('/confessions', async (req, res) => {
     try {
         const confessions = await Confession.find()
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1 })  // Trier par date de création, le plus récent d'abord
             .select('content createdAt reactions')  // Limiter les champs renvoyés
-            .lean();  // Utiliser lean() pour des objets plats
+            .lean();  // Utiliser lean() pour renvoyer des objets JavaScript simples
 
         res.status(200).json(confessions);
     } catch (error) {
