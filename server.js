@@ -31,7 +31,7 @@ app.use('/api', confessionRoutes);  // Utiliser les routes des confessions
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+    console.log(`Serveur démarré sur le port: ${PORT}`);
 });
 
 // Route d'accueil
