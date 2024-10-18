@@ -43,6 +43,10 @@ exports.addSubReply = async (req, res) => {
         parentReply.replies.push({ content, createdAt: new Date() });
         await confession.save();
 
+        console.log(`Confession ID: ${confessionId}, Reply ID: ${replyId}`);
+        console.log('Confession found:', confession);
+        console.log('Parent Reply found:', parentReply);
+
         res.status(201).json(confession);
     } catch (error) {
         console.error('Erreur lors de l\'ajout de la sous-réponse:', error);
