@@ -14,13 +14,16 @@ exports.createConfession = async (req, res) => {
     }
 };
 
-// Récupérer toutes les confessions
+// Récupérer toutes les confessions et leurs réponses
 exports.getAllConfessions = async (req, res) => {
     try {
         const confessions = await Confession.find()
             .sort({ createdAt: -1 })
-            .select('content createdAt reactions')
-            .lean();
+            .populate({
+                path: 'replies',  // Populate les réponses
+                populate: { path: 'replies' }  // Populate les sous-réponses
+            })
+            .lean();  // Convertir le résultat en objet JavaScript simple
 
         res.status(200).json(confessions);
     } catch (error) {
