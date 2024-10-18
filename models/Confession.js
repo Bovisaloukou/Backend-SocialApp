@@ -14,8 +14,10 @@ const confessionSchema = new mongoose.Schema({
         of: Number,
         default: {}
     },
-    replies: [replySchema]  // Les confessions ont une liste de réponses
+    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Référencer d'autres réponses
 });
 
+const Reply = mongoose.model('Reply', replySchema);
 const Confession = mongoose.model('Confession', confessionSchema);
-module.exports = Confession;
+
+module.exports = { Confession, Reply };
