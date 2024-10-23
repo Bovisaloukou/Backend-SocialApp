@@ -82,12 +82,13 @@ exports.login = async (req, res) => {
 
         // Vérifie si l'utilisateur a validé son email
         if (!user.isVerified) {
+            // Bloquer les utilisateurs non vérifiés avant de créer le token
             return res.status(403).json({ error: 'Veuillez vérifier votre email avant de vous connecter.' });
         }
 
-        // Créer un token JWT avec l'email inclus dans le payload
+        // Créer un token JWT uniquement si l'email est vérifié
         const token = jwt.sign(
-            { id: user._id, email: user.email },  // Ajout de l'email ici
+            { id: user._id, email: user.email },
             'secretkey',
             { expiresIn: '1h' }
         );

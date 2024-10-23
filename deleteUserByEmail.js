@@ -4,8 +4,6 @@ require('dotenv').config();  // Pour charger les variables d'environnement si n�
 
 // Connexion à la base de données MongoDB
 mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
 })
 .then(() => console.log('Connecté à MongoDB'))
 .catch((error) => console.error('Erreur lors de la connexion à MongoDB', error));
@@ -29,4 +27,4 @@ const deleteUserByEmail = async (email) => {
 };
 
 // Appeler la fonction avec l'email de l'utilisateur à supprimer
-deleteUserByEmail('bovisaloukou1@gmail.com');
+deleteUserByEmail('bovisaloukou@gmail.com');
