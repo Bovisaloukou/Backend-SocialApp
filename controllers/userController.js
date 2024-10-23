@@ -1,8 +1,11 @@
 // /controllers/userController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
+const sendEmail = require('../utils/sendEmail');  // Utilitaire d'envoi d'email
 
+// Inscription d'un nouvel utilisateur
 // Inscription d'un nouvel utilisateur
 exports.register = async (req, res) => {
     try {
@@ -19,18 +22,51 @@ exports.register = async (req, res) => {
             return res.status(400).json({ error: 'Cet email est déjà utilisé par un autre utilisateur' });
         }
 
-        // Vérifier si le matricule est déjà utilisé
         const existingMatricule = await User.findOne({ matricule });
         if (existingMatricule) {
             return res.status(400).json({ error: 'Ce matricule est déjà utilisé par un autre utilisateur' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword, matricule });
+        const verificationToken = crypto.randomBytes(32).toString('hex');  // Génère un token unique
+
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            matricule,
+            verificationToken  // Stocke le token de vérification
+        });
+
         await newUser.save();
-        res.status(201).json({ message: 'Utilisateur créé avec succès' });
+
+        // Envoi de l'email de vérification
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+        await sendEmail(email, 'Vérifiez votre email', `Veuillez cliquer sur ce lien pour vérifier votre email : ${verificationUrl}`);
+
+        res.status(201).json({ message: 'Utilisateur créé avec succès, un email de vérification a été envoyé.' });
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la création de l\'utilisateur' });
+    }
+};
+
+// Vérification de l'email via le token
+exports.verifyEmail = async (req, res) => {
+    try {
+        const { token } = req.body;
+        const user = await User.findOne({ verificationToken: token });
+
+        if (!user) {
+            return res.status(400).json({ error: 'Token invalide' });
+        }
+
+        user.isVerified = true;
+        user.verificationToken = null;  // Supprime le token après vérification
+        await user.save();
+
+        res.status(200).json({ message: 'Email vérifié avec succès' });
+    } catch (error) {
+        res.status(500).json({ error: 'Erreur lors de la vérification de l\'email' });
     }
 };
 
