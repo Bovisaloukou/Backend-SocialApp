@@ -5,7 +5,16 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');  // Utilitaire d'envoi d'email
 
-// Inscription d'un nouvel utilisateur
+// Récupérer tous les utilisateurs
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('_id name email');  // Sélectionne uniquement les champs nécessaires
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs' });
+    }
+};
+
 // Inscription d'un nouvel utilisateur
 exports.register = async (req, res) => {
     try {
