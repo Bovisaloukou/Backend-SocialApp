@@ -17,6 +17,7 @@
     "express": "^4.21.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mailgun-js": "^0.22.0",
     "mongoose": "^8.7.2",
     "nodemailer": "^6.9.15",
     "qrcode": "^1.5.4"

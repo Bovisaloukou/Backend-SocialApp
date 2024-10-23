@@ -80,6 +80,11 @@ exports.login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: 'Mot de passe incorrect' });
 
+        // Vérifie si l'utilisateur a validé son email
+        if (!user.isVerified) {
+            return res.status(403).json({ error: 'Veuillez vérifier votre email avant de vous connecter.' });
+        }
+
         // Créer un token JWT avec l'email inclus dans le payload
         const token = jwt.sign(
             { id: user._id, email: user.email },  // Ajout de l'email ici
@@ -90,15 +95,5 @@ exports.login = async (req, res) => {
         res.status(200).json({ token });
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la connexion' });
-    }
-};
-
-// Récupérer tous les utilisateurs
-exports.getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find().select('_id name email');  // Sélectionne uniquement les champs nécessaires
-        res.status(200).json(users);
-    } catch (error) {
-        res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs' });
     }
 };
