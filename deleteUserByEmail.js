@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 const User = require('./models/User');  // Assure-toi que le chemin vers ton modèle User est correct
 require('dotenv').config();  // Pour charger les variables d'environnement si nécessaire
 
@@ -29,4 +29,4 @@ const deleteUserByEmail = async (email) => {
 };
 
 // Appeler la fonction avec l'email de l'utilisateur à supprimer
-deleteUserByEmail('bovisaloukou@gmail.com');
+deleteUserByEmail('bovisaloukou@gmail.com');*/
