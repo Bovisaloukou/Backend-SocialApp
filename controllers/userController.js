@@ -6,14 +6,27 @@ const User = require('../models/User');
 // Inscription d'un nouvel utilisateur
 exports.register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, matricule } = req.body;
+
+        // Vérification du format du matricule : uniquement lettres et chiffres
+        const matriculeRegex = /^[A-Za-z0-9]+$/;
+        if (!matriculeRegex.test(matricule)) {
+            return res.status(400).json({ error: 'Le matricule doit contenir uniquement des lettres et des chiffres' });
+        }
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            // Modification du message d'erreur ici
             return res.status(400).json({ error: 'Cet email est déjà utilisé par un autre utilisateur' });
         }
+
+        // Vérifier si le matricule est déjà utilisé
+        const existingMatricule = await User.findOne({ matricule });
+        if (existingMatricule) {
+            return res.status(400).json({ error: 'Ce matricule est déjà utilisé par un autre utilisateur' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword });
+        const newUser = new User({ name, email, password: hashedPassword, matricule });
         await newUser.save();
         res.status(201).json({ message: 'Utilisateur créé avec succès' });
     } catch (error) {
