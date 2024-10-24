@@ -1,15 +1,15 @@
 const mailgun = require('mailgun-js');
 
-// Configuration du transporteur Mailgun
+// Configuration Mailgun
 const mg = mailgun({ 
-    apiKey: process.env.MAILGUN_API_KEY,  // Utilisez la clé API privée ici
-    domain: process.env.MAILGUN_DOMAIN    // Utilisez votre domaine Mailgun ici
+    apiKey: process.env.MAILGUN_API_KEY,  // Utilisez votre clé API privée Mailgun ici
+    domain: process.env.MAILGUN_DOMAIN    // Assurez-vous que le domaine est correct (sandbox ou domaine réel)
 });
 
 const sendEmail = async (to, subject, text) => {
     try {
         const mailOptions = {
-            from: 'postmaster@' + process.env.MAILGUN_DOMAIN,  // Utilisez une adresse "from" valide
+            from: `postmaster@${process.env.MAILGUN_DOMAIN}`,  // Utilisez une adresse valide correspondant au domaine
             to,                                               // Destinataire
             subject,                                          // Sujet de l'email
             text                                              // Contenu de l'email
