@@ -57,7 +57,7 @@ exports.register = async (req, res) => {
 // Vérification de l'email via le token
 exports.verifyEmail = async (req, res) => {
     try {
-        const token = req.body.token || req.query.token;
+        const token = req.query.token; // On prend le token de la requête GET
         if (!token) {
             return res.status(400).json({ error: 'Token manquant' });
         }
@@ -77,7 +77,9 @@ exports.verifyEmail = async (req, res) => {
             return res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'utilisateur' });
         }
 
-        res.status(200).json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
+        // Redirection vers la page de connexion après vérification réussie
+        res.redirect(`${process.env.FRONTEND_URL}/login`);  // Redirige directement l'utilisateur vers la page de connexion
+
     } catch (error) {
         console.error('Erreur lors de la vérification de l\'email :', error);
         res.status(500).json({ error: 'Erreur lors de la vérification de l\'email' });
