@@ -62,27 +62,32 @@ exports.register = async (req, res) => {
 // Vérification de l'email via le token
 exports.verifyEmail = async (req, res) => {
     try {
-        // Récupère le token depuis le corps de la requête ou depuis l'URL
-        const token = req.body.token || req.query.token;  
+        // Log le token pour vérifier s'il est bien reçu
+        console.log('Token reçu :', req.body.token || req.query.token);
 
+        const token = req.body.token || req.query.token;  
         if (!token) {
+            console.log('Erreur : Token manquant');
             return res.status(400).json({ error: 'Token manquant' });
         }
 
-        // Trouve l'utilisateur correspondant au token de vérification
         const user = await User.findOne({ verificationToken: token });
+        console.log('Utilisateur trouvé :', user);
 
         if (!user) {
+            console.log('Erreur : Utilisateur non trouvé ou token invalide');
             return res.status(400).json({ error: 'Token invalide ou utilisateur non trouvé' });
         }
 
-        // Met à jour l'état de vérification de l'utilisateur
+        // Mise à jour du statut de vérification
         user.isVerified = true;
-        user.verificationToken = null;  // Supprime le token après vérification
+        user.verificationToken = null;
         await user.save();
 
+        console.log('Utilisateur vérifié avec succès');
         res.status(200).json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
     } catch (error) {
+        console.error('Erreur lors de la vérification de l\'email :', error);
         res.status(500).json({ error: 'Erreur lors de la vérification de l\'email' });
     }
 };
