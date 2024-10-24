@@ -1,21 +1,21 @@
 const nodemailer = require('nodemailer');
 
-// Créez un transporteur Nodemailer avec Sendinblue
+// Créez un transporteur Nodemailer avec Gmail
 const transporter = nodemailer.createTransport({
-  service: 'SendinBlue',
+  service: 'gmail',
   auth: {
-    user: process.env.SENDINBLUE_EMAIL,  // Votre email Sendinblue
-    pass: process.env.SENDINBLUE_API_KEY // Votre clé API Sendinblue
+    user: process.env.GMAIL_USER,        // Votre adresse email Gmail
+    pass: process.env.GMAIL_APP_PASSWORD // Le mot de passe d'application généré
   }
 });
 
 const sendEmail = async (to, subject, text) => {
   try {
     const mailOptions = {
-      from: 'eleonorelysiane@gmail.com',  // L'adresse email d'envoi
-      to,                               // Destinataire
-      subject,                          // Sujet de l'email
-      text                              // Contenu de l'email
+      from: process.env.GMAIL_USER,       // Adresse email d'envoi
+      to,                                 // Destinataire
+      subject,                            // Sujet de l'email
+      text                                // Contenu de l'email
     };
 
     const result = await transporter.sendMail(mailOptions);
