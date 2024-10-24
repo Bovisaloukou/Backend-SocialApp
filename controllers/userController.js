@@ -62,7 +62,12 @@ exports.register = async (req, res) => {
 // Vérification de l'email via le token
 exports.verifyEmail = async (req, res) => {
     try {
-        const { token } = req.body;  // Récupère le token depuis le body de la requête
+        // Récupère le token depuis le corps de la requête ou depuis l'URL
+        const token = req.body.token || req.query.token;  
+
+        if (!token) {
+            return res.status(400).json({ error: 'Token manquant' });
+        }
 
         // Trouve l'utilisateur correspondant au token de vérification
         const user = await User.findOne({ verificationToken: token });
