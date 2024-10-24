@@ -20,7 +20,7 @@ exports.register = async (req, res) => {
     try {
         const { name, email, password, matricule } = req.body;
 
-        // Vérification du format du matricule : uniquement lettres et chiffres
+        // Vérifications matricule et email
         const matriculeRegex = /^[A-Za-z0-9]+$/;
         if (!matriculeRegex.test(matricule)) {
             return res.status(400).json({ error: 'Le matricule doit contenir uniquement des lettres et des chiffres' });
@@ -28,12 +28,7 @@ exports.register = async (req, res) => {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: 'Cet email est déjà utilisé par un autre utilisateur' });
-        }
-
-        const existingMatricule = await User.findOne({ matricule });
-        if (existingMatricule) {
-            return res.status(400).json({ error: 'Ce matricule est déjà utilisé par un autre utilisateur' });
+            return res.status(400).json({ error: 'Cet email est déjà utilisé' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,16 +39,16 @@ exports.register = async (req, res) => {
             email,
             password: hashedPassword,
             matricule,
-            verificationToken  // Stocke le token de vérification
+            verificationToken,  // Ajoute le token pour la vérification
         });
 
         await newUser.save();
 
-        // Envoi de l'email de vérification
+        // Générer le lien de vérification avec le token
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
         await sendEmail(email, 'Vérifiez votre email', `Veuillez cliquer sur ce lien pour vérifier votre email : ${verificationUrl}`);
 
-        res.status(201).json({ message: 'Utilisateur créé avec succès, un email de vérification a été envoyé.' });
+        res.status(201).json({ message: 'Utilisateur créé avec succès. Un email de vérification a été envoyé.' });
     } catch (error) {
         res.status(500).json({ error: 'Erreur lors de la création de l\'utilisateur' });
     }
@@ -62,29 +57,29 @@ exports.register = async (req, res) => {
 // Vérification de l'email via le token
 exports.verifyEmail = async (req, res) => {
     try {
-        // Log le token pour vérifier s'il est bien reçu
         console.log('Token reçu :', req.body.token || req.query.token);
 
         const token = req.body.token || req.query.token;  
         if (!token) {
-            console.log('Erreur : Token manquant');
             return res.status(400).json({ error: 'Token manquant' });
         }
 
+        // Trouver l'utilisateur par le token
         const user = await User.findOne({ verificationToken: token });
-        console.log('Utilisateur trouvé :', user);
 
         if (!user) {
-            console.log('Erreur : Utilisateur non trouvé ou token invalide');
             return res.status(400).json({ error: 'Token invalide ou utilisateur non trouvé' });
         }
 
-        // Mise à jour du statut de vérification
+        // Mettre à jour l'utilisateur pour le marquer comme vérifié
         user.isVerified = true;
         user.verificationToken = null;
-        await user.save();
 
-        console.log('Utilisateur vérifié avec succès');
+        const updatedUser = await user.save();  // Met à jour dans MongoDB
+        if (!updatedUser) {
+            return res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'utilisateur' });
+        }
+
         res.status(200).json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
     } catch (error) {
         console.error('Erreur lors de la vérification de l\'email :', error);
