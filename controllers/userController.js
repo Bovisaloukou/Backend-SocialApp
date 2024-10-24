@@ -44,8 +44,8 @@ exports.register = async (req, res) => {
 
         await newUser.save();
 
-        // Générer le lien de vérification avec le token
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+        // Générer le lien de vérification avec le bon chemin `/users/verify-email`
+        const verificationUrl = `${process.env.FRONTEND_URL}/users/verify-email?token=${verificationToken}`;
         await sendEmail(email, 'Vérifiez votre email', `Veuillez cliquer sur ce lien pour vérifier votre email : ${verificationUrl}`);
 
         res.status(201).json({ message: 'Utilisateur créé avec succès. Un email de vérification a été envoyé.' });
@@ -57,25 +57,22 @@ exports.register = async (req, res) => {
 // Vérification de l'email via le token
 exports.verifyEmail = async (req, res) => {
     try {
-        console.log('Token reçu :', req.body.token || req.query.token);
-
-        const token = req.body.token || req.query.token;  
+        const token = req.body.token || req.query.token;
         if (!token) {
             return res.status(400).json({ error: 'Token manquant' });
         }
 
-        // Trouver l'utilisateur par le token
+        // Trouver l'utilisateur par le token de vérification
         const user = await User.findOne({ verificationToken: token });
-
         if (!user) {
             return res.status(400).json({ error: 'Token invalide ou utilisateur non trouvé' });
         }
 
-        // Mettre à jour l'utilisateur pour le marquer comme vérifié
+        // Mettre à jour l'utilisateur comme vérifié
         user.isVerified = true;
         user.verificationToken = null;
 
-        const updatedUser = await user.save();  // Met à jour dans MongoDB
+        const updatedUser = await user.save();
         if (!updatedUser) {
             return res.status(500).json({ error: 'Erreur lors de la mise à jour de l\'utilisateur' });
         }
