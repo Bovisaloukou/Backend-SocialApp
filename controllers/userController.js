@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
         await newUser.save();
 
         // Générer le lien de vérification avec le bon chemin `/users/verify-email`
-        const verificationUrl = `${process.env.FRONTEND_URL}/users/verify-email?token=${verificationToken}`;
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
         await sendEmail(email, 'Vérifiez votre email', `Veuillez cliquer sur ce lien pour vérifier votre email : ${verificationUrl}`);
 
         res.status(201).json({ message: 'Utilisateur créé avec succès. Un email de vérification a été envoyé.' });
