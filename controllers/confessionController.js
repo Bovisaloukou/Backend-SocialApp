@@ -1,11 +1,22 @@
 const { Confession, Reply } = require('../models/Confession');
+const { upload } = require('../config/cloudinaryConfig'); // Importez le middleware Multer configuré
 
-// Créer une nouvelle confession
+// Créer une nouvelle confession avec ou sans image
 exports.createConfession = async (req, res) => {
     try {
-        console.log('Contenu de la requête :', req.body);  // Affiche le contenu de la requête pour voir ce qui est envoyé
         const { content } = req.body;
-        const newConfession = new Confession({ content });
+        let imageUrl = null;
+
+        // Vérifiez si une image est incluse
+        if (req.file) {
+            imageUrl = req.file.path; // Chemin de l'image sur Cloudinary
+        }
+
+        const newConfession = new Confession({
+            content,
+            imageUrl, // Enregistre l'URL de l'image
+        });
+
         await newConfession.save();
         res.status(201).json(newConfession);
     } catch (error) {

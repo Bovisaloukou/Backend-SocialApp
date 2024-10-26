@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const confessionController = require('../controllers/confessionController');
+const { upload } = require('../config/cloudinaryConfig');
 
-// Créer une nouvelle confession
-router.post('/confessions', confessionController.createConfession);
+// Route pour créer une nouvelle confession avec une image (optionnel)
+router.post('/confessions', upload.single('image'), confessionController.createConfession);
 
 // Récupérer toutes les confessions
 router.get('/confessions', confessionController.getAllConfessions);

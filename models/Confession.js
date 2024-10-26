@@ -11,6 +11,7 @@ const replySchema = new mongoose.Schema({
 const confessionSchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
+    imageUrl: { type: String }, // URL de l'image stockée
     reactions: { 
         type: Map, 
         of: Number,
