@@ -25,16 +25,22 @@ exports.createConfession = async (req, res) => {
     }
 };
 
-// Récupérer toutes les confessions et leurs réponses
+// Récupérer toutes les confessions et leurs réponses avec pagination
 exports.getAllConfessions = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1; // Numéro de page
+        const limit = parseInt(req.query.limit) || 10; // Nombre de confessions par page
+        const skip = (page - 1) * limit;
+
         const confessions = await Confession.find()
             .sort({ createdAt: -1 })
             .populate({
-                path: 'replies',  // Populate les réponses
-                populate: { path: 'replies' }  // Populate les sous-réponses
+                path: 'replies',
+                populate: { path: 'replies' }
             })
-            .lean();  // Convertir le résultat en objet JavaScript simple
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
         res.status(200).json(confessions);
     } catch (error) {
