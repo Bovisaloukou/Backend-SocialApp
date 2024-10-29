@@ -41,7 +41,10 @@ exports.getAllConfessions = async (req, res) => {
             .sort({ createdAt: -1 })
             .populate({
                 path: 'replies',
-                populate: { path: 'replies' } // Récupère les sous-réponses
+                populate: {
+                    path: 'replies',
+                    populate: { path: 'replies' } // Récupère les sous-réponses jusqu'au 3ème niveau
+                }
             })
             .skip(skip)
             .limit(limit)
