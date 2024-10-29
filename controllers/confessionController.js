@@ -134,6 +134,10 @@ exports.addSubReply = async (req, res) => {
 // Like a confession
 exports.likeConfession = async (req, res) => {
     try {
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ error: 'Utilisateur non authentifié.' });
+        }
+        
         const { confessionId } = req.params;
         const userId = req.user._id;  // Assuming user is authenticated
 
