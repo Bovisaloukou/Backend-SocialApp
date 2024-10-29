@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const autopopulate = require('mongoose-autopopulate'); // Importer le plugin
 
 // Schéma des sous-réponses
 const replySchema = new mongoose.Schema({
@@ -6,7 +7,11 @@ const replySchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
     likes: { type: Number, default: 0 },  // Add likes count
     userLikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],  // Track users who liked
-    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Sous-réponses
+    replies: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Reply',
+        autopopulate: true  // Activer l'autopopulation pour replies
+    }]
 });
 
 // Schéma des confessions
@@ -21,8 +26,16 @@ const confessionSchema = new mongoose.Schema({
         of: Number,
         default: {}
     },
-    replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Réponses (assurez-vous que replies est un tableau)
+    replies: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Reply',
+        autopopulate: true  // Activer l'autopopulation pour replies
+    }]
 });
+
+// Appliquer le plugin autopopulate aux schémas
+confessionSchema.plugin(autopopulate);
+replySchema.plugin(autopopulate);
 
 // Modèles Mongoose
 const Confession = mongoose.model('Confession', confessionSchema);
