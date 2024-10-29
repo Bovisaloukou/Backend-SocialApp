@@ -185,7 +185,9 @@ exports.likeConfession = async (req, res) => {
 exports.likeReply = async (req, res) => {
     try {
         const { replyId } = req.params;
-        const userId = req.user.id;
+        
+        const userId = req.user ? req.user.id : null;
+        console.log("ID de l'utilisateur connecté:", userId); // Ajout du log pour vérifier l'ID utilisateur
 
         console.log("ID de la réponse:", replyId);
         console.log("ID de l'utilisateur:", userId);
