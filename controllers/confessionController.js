@@ -60,6 +60,32 @@ exports.getAllConfessions = async (req, res) => {
             console.log(new mongoose.Types.ObjectId(userId));
             console.log(confession.userLikes);
             console.log(confession.likedByCurrentUser);
+
+            // Parcours de chaque réponse dans la confession
+            confession.replies = confession.replies.map(reply => {
+                reply.userLikes = reply.userLikes || [];  // Initialiser userLikes si indéfini
+
+                // Définir `likedByCurrentUser` pour la réponse
+                reply.likedByCurrentUser = userId && reply.userLikes.some(
+                    likeId => likeId.equals(new mongoose.Types.ObjectId(userId))
+                );
+
+                // Parcours de chaque sous-réponse dans la réponse
+                if (reply.replies && Array.isArray(reply.replies)) {
+                    reply.replies = reply.replies.map(subReply => {
+                        subReply.userLikes = subReply.userLikes || [];  // Initialiser userLikes si indéfini
+
+                        // Définir `likedByCurrentUser` pour la sous-réponse
+                        subReply.likedByCurrentUser = userId && subReply.userLikes.some(
+                            likeId => likeId.equals(new mongoose.Types.ObjectId(userId))
+                        );
+
+                        return subReply;
+                    });
+                }
+
+                return reply;
+            });
         });
 
         res.status(200).json(confessions);
@@ -185,7 +211,7 @@ exports.likeConfession = async (req, res) => {
 exports.likeReply = async (req, res) => {
     try {
         const { replyId } = req.params;
-        
+
         const userId = req.user ? req.user.id : null;
         console.log("ID de l'utilisateur connecté:", userId); // Ajout du log pour vérifier l'ID utilisateur
 
