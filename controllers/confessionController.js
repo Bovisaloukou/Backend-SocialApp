@@ -1,5 +1,6 @@
 const { Confession, Reply } = require('../models/Confession');
 const { upload } = require('../config/cloudinaryConfig'); // Importez le middleware Multer configuré
+const mongoose = require('mongoose');
 
 // Créer une nouvelle confession avec ou sans image
 exports.createConfession = async (req, res) => {
@@ -50,7 +51,8 @@ exports.getAllConfessions = async (req, res) => {
         confessions.forEach(confession => {
             console.log("ID de l'utilisateur connecté:", userId);
             //console.log("ID des utilisateurs ayant liké:", confession.userLikes); // Log les userLikes pour vérifier
-            confession.likedByCurrentUser = userId && confession.userLikes.includes(userId) ? true : false;
+            confession.likedByCurrentUser = userId && confession.userLikes.includes(new mongoose.Types.ObjectId(userId)) ? true : false;
+            console.log(new mongoose.Types.ObjectId(userId));
             console.log(confession.userLikes);
             console.log(confession.likedByCurrentUser);
         });
