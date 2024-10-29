@@ -47,7 +47,8 @@ exports.getAllConfessions = async (req, res) => {
 
         // Ajoute `likedByCurrentUser` à chaque confession pour indiquer si l'utilisateur actuel a liké
         confessions.forEach(confession => {
-            confession.likedByCurrentUser = userId && confession.userLikes.includes(userId);
+            // Vérifie que l'utilisateur connecté est dans `userLikes`
+            confession.likedByCurrentUser = userId && confession.userLikes.includes(userId) ? true : false;
         });
 
         res.status(200).json(confessions);
