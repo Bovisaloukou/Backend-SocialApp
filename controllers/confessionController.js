@@ -28,19 +28,28 @@ exports.createConfession = async (req, res) => {
 // Récupérer toutes les confessions et leurs réponses avec pagination
 exports.getAllConfessions = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Numéro de page
-        const limit = parseInt(req.query.limit) || 10; // Nombre de confessions par page
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
+
+        const userId = req.user ? req.user.id : null; // Récupère l'ID utilisateur si authentifié
 
         const confessions = await Confession.find()
             .sort({ createdAt: -1 })
             .populate({
                 path: 'replies',
-                populate: { path: 'replies' }
+                populate: { path: 'replies' } // Remplit les réponses et leurs sous-réponses
             })
             .skip(skip)
             .limit(limit)
             .lean();
+
+        // Ajoute `likedByCurrentUser` à chaque confession
+        if (userId) {
+            confessions.forEach(confession => {
+                confession.likedByCurrentUser = confession.userLikes.includes(userId);
+            });
+        }
 
         res.status(200).json(confessions);
     } catch (error) {
