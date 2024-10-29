@@ -34,6 +34,7 @@ exports.getAllConfessions = async (req, res) => {
 
         // Récupère l'utilisateur connecté
         const userId = req.user ? req.user.id : null;
+        console.log("ID de l'utilisateur connecté:", userId); // Ajout du log pour vérifier l'ID utilisateur
 
         const confessions = await Confession.find()
             .sort({ createdAt: -1 })
@@ -47,7 +48,7 @@ exports.getAllConfessions = async (req, res) => {
 
         // Ajoute `likedByCurrentUser` à chaque confession pour indiquer si l'utilisateur actuel a liké
         confessions.forEach(confession => {
-            // Vérifie que l'utilisateur connecté est dans `userLikes`
+            console.log("ID des utilisateurs ayant liké:", confession.userLikes); // Log les userLikes pour vérifier
             confession.likedByCurrentUser = userId && confession.userLikes.includes(userId) ? true : false;
         });
 

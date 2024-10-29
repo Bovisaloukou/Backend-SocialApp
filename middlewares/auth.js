@@ -10,6 +10,7 @@ const auth = (req, res, next) => {
         const verified = jwt.verify(bearerToken, 'secretkey'); // Vérifie et décode le token
         console.log('Token vérifié:', verified); // Log le contenu du token
         req.user = verified; // Attache l'ID utilisateur à req.user
+        console.log("Utilisateur authentifié:", req.user); // Log pour vérifier l'utilisateur authentifié
         next();
     } catch (error) {
         console.error('Erreur lors de la vérification du token:', error); // Log l'erreur du token
