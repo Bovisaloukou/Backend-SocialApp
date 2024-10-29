@@ -8,7 +8,7 @@ const auth = require('../middlewares/auth'); // Importez le middleware d'authent
 router.post('/confessions', upload.single('image'), confessionController.createConfession);
 
 // Récupérer toutes les confessions
-router.get('/confessions', confessionController.getAllConfessions);
+router.get('/confessions',auth, confessionController.getAllConfessions);
 
 // Ajouter une réponse à une confession
 router.post('/confessions/:confessionId/replies', confessionController.addReply);
