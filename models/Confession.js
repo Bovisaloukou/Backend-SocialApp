@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const replySchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
+    likes: { type: Number, default: 0 },  // Add likes count
+    userLikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],  // Track users who liked
     replies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reply' }]  // Sous-réponses
 });
 
@@ -12,6 +14,8 @@ const confessionSchema = new mongoose.Schema({
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     imageUrl: { type: String }, // URL de l'image stockée
+    likes: { type: Number, default: 0 },  // Add likes count
+    userLikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],  // Track users who liked
     reactions: { 
         type: Map, 
         of: Number,

@@ -130,3 +130,55 @@ exports.addSubReply = async (req, res) => {
         res.status(500).json({ error: 'Erreur lors de l\'ajout de la sous-réponse' });
     }
 };
+
+// Like a confession
+exports.likeConfession = async (req, res) => {
+    try {
+        const { confessionId } = req.params;
+        const userId = req.user._id;  // Assuming user is authenticated
+
+        const confession = await Confession.findById(confessionId);
+        if (!confession) return res.status(404).json({ error: 'Confession not found' });
+
+        // Toggle like
+        const hasLiked = confession.userLikes.includes(userId);
+        confession.likes += hasLiked ? -1 : 1;
+        if (hasLiked) {
+            confession.userLikes.pull(userId);
+        } else {
+            confession.userLikes.push(userId);
+        }
+
+        await confession.save();
+        res.status(200).json({ likes: confession.likes });
+    } catch (error) {
+        console.error('Error liking confession:', error);
+        res.status(500).json({ error: 'Error liking confession' });
+    }
+};
+
+// Like a reply
+exports.likeReply = async (req, res) => {
+    try {
+        const { replyId } = req.params;
+        const userId = req.user._id;
+
+        const reply = await Reply.findById(replyId);
+        if (!reply) return res.status(404).json({ error: 'Reply not found' });
+
+        // Toggle like
+        const hasLiked = reply.userLikes.includes(userId);
+        reply.likes += hasLiked ? -1 : 1;
+        if (hasLiked) {
+            reply.userLikes.pull(userId);
+        } else {
+            reply.userLikes.push(userId);
+        }
+
+        await reply.save();
+        res.status(200).json({ likes: reply.likes });
+    } catch (error) {
+        console.error('Error liking reply:', error);
+        res.status(500).json({ error: 'Error liking reply' });
+    }
+};

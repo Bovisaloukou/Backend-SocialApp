@@ -15,4 +15,8 @@ router.post('/confessions/:confessionId/replies', confessionController.addReply)
 // Ajouter une sous-réponse à une réponse spécifique d'une confession
 router.post('/confessions/:confessionId/replies/:replyId', confessionController.addSubReply);
 
+// New routes for liking confessions and replies
+router.patch('/confessions/:confessionId/like', confessionController.likeConfession);
+router.patch('/replies/:replyId/like', confessionController.likeReply);
+
 module.exports = router;
