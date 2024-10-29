@@ -18,6 +18,6 @@ router.post('/confessions/:confessionId/replies/:replyId', confessionController.
 
 // New routes for liking confessions and replies
 router.patch('/confessions/:confessionId/like',auth, confessionController.likeConfession);
-router.patch('/replies/:replyId/like', confessionController.likeReply);
+router.patch('/replies/:replyId/like',auth, confessionController.likeReply);
 
 module.exports = router;

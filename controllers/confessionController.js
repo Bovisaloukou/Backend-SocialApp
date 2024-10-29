@@ -53,7 +53,7 @@ exports.getAllConfessions = async (req, res) => {
             //console.log("ID des utilisateurs ayant liké:", confession.userLikes); // Log les userLikes pour vérifier
 
             confession.userLikes = confession.userLikes || [];
-            
+
             confession.likedByCurrentUser = userId && confession.userLikes.some(
                 likeId => likeId.equals(new mongoose.Types.ObjectId(userId)) // Utiliser `.equals()` pour comparer les ObjectId
             );
@@ -187,8 +187,16 @@ exports.likeReply = async (req, res) => {
         const { replyId } = req.params;
         const userId = req.user.id;
 
+        console.log("ID de la réponse:", replyId);
+        console.log("ID de l'utilisateur:", userId);
+
         const reply = await Reply.findById(replyId);
-        if (!reply) return res.status(404).json({ error: 'Reply not found' });
+        if (!reply) {
+            console.log("Réponse non trouvée pour l'ID donné.");
+            return res.status(404).json({ error: 'Réponse non trouvée' });
+        }
+
+        console.log("Réponse trouvée:", reply);
 
         // Toggle like
         const hasLiked = reply.userLikes.includes(userId);
