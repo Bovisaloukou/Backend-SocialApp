@@ -134,12 +134,12 @@ exports.addSubReply = async (req, res) => {
 // Like a confession
 exports.likeConfession = async (req, res) => {
     try {
-        if (!req.user || !req.user._id) {
+        if (!req.user || !req.user.id) {
             return res.status(401).json({ error: 'Utilisateur non authentifié.' });
         }
-        
+
         const { confessionId } = req.params;
-        const userId = req.user._id;  // Assuming user is authenticated
+        const userId = req.user.id;  // Assuming user is authenticated
 
         const confession = await Confession.findById(confessionId);
         if (!confession) return res.status(404).json({ error: 'Confession not found' });
@@ -165,7 +165,7 @@ exports.likeConfession = async (req, res) => {
 exports.likeReply = async (req, res) => {
     try {
         const { replyId } = req.params;
-        const userId = req.user._id;
+        const userId = req.user.id;
 
         const reply = await Reply.findById(replyId);
         if (!reply) return res.status(404).json({ error: 'Reply not found' });
