@@ -51,6 +51,7 @@ exports.getAllConfessions = async (req, res) => {
             console.log("ID de l'utilisateur connecté:", userId);
             //console.log("ID des utilisateurs ayant liké:", confession.userLikes); // Log les userLikes pour vérifier
             confession.likedByCurrentUser = userId && confession.userLikes.includes(userId) ? true : false;
+            console.log(confession.userLikes);
             console.log(confession.likedByCurrentUser);
         });
 
