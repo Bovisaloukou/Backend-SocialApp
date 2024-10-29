@@ -51,7 +51,9 @@ exports.getAllConfessions = async (req, res) => {
         confessions.forEach(confession => {
             console.log("ID de l'utilisateur connecté:", userId);
             //console.log("ID des utilisateurs ayant liké:", confession.userLikes); // Log les userLikes pour vérifier
-            confession.likedByCurrentUser = userId && confession.userLikes.includes(new mongoose.Types.ObjectId(userId)) ? true : false;
+            confession.likedByCurrentUser = userId && confession.userLikes.some(
+                likeId => likeId.equals(new mongoose.Types.ObjectId(userId)) // Utiliser `.equals()` pour comparer les ObjectId
+            );
             console.log(new mongoose.Types.ObjectId(userId));
             console.log(confession.userLikes);
             console.log(confession.likedByCurrentUser);
