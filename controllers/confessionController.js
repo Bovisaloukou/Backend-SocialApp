@@ -43,47 +43,32 @@ exports.getAllConfessions = async (req, res) => {
             .limit(limit);
 
         // Ajoute `likedByCurrentUser` à chaque confession pour indiquer si l'utilisateur actuel a liké
-        confessions.forEach(confession => {
-            console.log("ID de l'utilisateur connecté:", userId);
-            //console.log("ID des utilisateurs ayant liké:", confession.userLikes); // Log les userLikes pour vérifier
-
-            confession.userLikes = confession.userLikes || [];
-
-            confession.likedByCurrentUser = userId && confession.userLikes.some(
-                likeId => likeId.equals(new mongoose.Types.ObjectId(userId)) // Utiliser `.equals()` pour comparer les ObjectId
+        const modifiedConfessions = confessions.map(confession => {
+            const confessionObj = confession.toObject();  // Convertir en objet JSON
+        
+            confessionObj.likedByCurrentUser = userId && confession.userLikes.some(
+                likeId => likeId.equals(new mongoose.Types.ObjectId(userId))
             );
-            console.log(new mongoose.Types.ObjectId(userId));
-            console.log(confession.userLikes);
-            console.log(confession.likedByCurrentUser);
-
-            // Parcours de chaque réponse dans la confession
-            confession.replies = confession.replies.map(reply => {
-                reply.userLikes = reply.userLikes || [];  // Initialiser userLikes si indéfini
-
-                // Définir `likedByCurrentUser` pour la réponse
+        
+            confessionObj.replies = confessionObj.replies.map(reply => {
                 reply.likedByCurrentUser = userId && reply.userLikes.some(
                     likeId => likeId.equals(new mongoose.Types.ObjectId(userId))
                 );
-
-                // Parcours de chaque sous-réponse dans la réponse
-                if (reply.replies && Array.isArray(reply.replies)) {
-                    reply.replies = reply.replies.map(subReply => {
-                        subReply.userLikes = subReply.userLikes || [];  // Initialiser userLikes si indéfini
-
-                        // Définir `likedByCurrentUser` pour la sous-réponse
-                        subReply.likedByCurrentUser = userId && subReply.userLikes.some(
-                            likeId => likeId.equals(new mongoose.Types.ObjectId(userId))
-                        );
-
-                        return subReply;
-                    });
-                }
-
+        
+                reply.replies = reply.replies.map(subReply => {
+                    subReply.likedByCurrentUser = userId && subReply.userLikes.some(
+                        likeId => likeId.equals(new mongoose.Types.ObjectId(userId))
+                    );
+                    return subReply;
+                });
                 return reply;
             });
+        
+            return confessionObj;
         });
+        
+        res.status(200).json(modifiedConfessions);
 
-        res.status(200).json(confessions);
     } catch (error) {
         console.error('Erreur lors de la récupération des confessions :', error);
         res.status(500).json({ error: 'Erreur lors de la récupération des confessions' });
