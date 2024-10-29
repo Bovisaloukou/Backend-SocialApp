@@ -40,8 +40,7 @@ exports.getAllConfessions = async (req, res) => {
         const confessions = await Confession.find()
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit)
-            .lean();
+            .limit(limit);
 
         // Ajoute `likedByCurrentUser` à chaque confession pour indiquer si l'utilisateur actuel a liké
         confessions.forEach(confession => {
