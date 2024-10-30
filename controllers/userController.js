@@ -49,7 +49,8 @@ exports.register = async (req, res) => {
         const logoUrl = 'logo192.png'; // Remplacez par l'URL du logo
         await sendEmail(
             email,
-            `
+            '🎉 Bienvenue sur WhisperHub ! Vérifiez votre e-mail pour commencer 🚀',
+            ` 
             <!DOCTYPE html>
             <html lang="fr">
             <head>
@@ -59,38 +60,26 @@ exports.register = async (req, res) => {
             </head>
             <body style="font-family: Arial, sans-serif; color: #333;">
                 <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-                    
-                    <!-- Logo -->
                     <div style="text-align: center;">
                         <img src="${logoUrl}" alt="WhisperHub Logo" style="width: 150px; margin-bottom: 20px;">
                     </div>
-        
-                    <!-- Titre -->
                     <h1 style="color: #1a202c; text-align: center;">Bienvenue sur <span style="color: #E53E3E;">WhisperHub</span>!</h1>
                     <p style="text-align: center; font-size: 1.1em; color: #4A5568;">
                         Merci de rejoindre notre communauté ! Avant de plonger dans les confessions, il ne vous reste plus qu’une étape.
                     </p>
-        
-                    <!-- Message principal -->
                     <h2 style="color: #2B6CB0; text-align: center;">🚀 Activez votre compte dès maintenant</h2>
                     <p style="color: #4A5568; line-height: 1.6;">
                         Pour confirmer votre adresse e-mail et accéder à toutes les fonctionnalités de WhisperHub, cliquez simplement sur le bouton ci-dessous :
                     </p>
-        
-                    <!-- Bouton de vérification -->
                     <div style="text-align: center; margin: 20px;">
                         <a href="${verificationUrl}" style="background-color: #2B6CB0; color: white; padding: 12px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">
                             Vérifier mon e-mail
                         </a>
                     </div>
-        
                     <p style="color: #718096; font-size: 0.9em; text-align: center;">
                         🔒 Cette étape est essentielle pour garantir la sécurité de votre compte et de vos informations.
                     </p>
-        
                     <hr style="margin: 20px 0; border: none; border-top: 1px solid #E2E8F0;">
-                    
-                    <!-- Phrases de clôture -->
                     <p style="color: #4A5568; line-height: 1.6;">
                         Nous avons hâte de voir ce que vous partagerez et de vous accompagner dans votre aventure sur WhisperHub ! 
                         Si vous avez des questions, notre équipe est toujours là pour vous.
@@ -103,7 +92,7 @@ exports.register = async (req, res) => {
             </body>
             </html>
             `
-        );        
+        );                
 
         res.status(201).json({ message: 'Utilisateur créé avec succès. Un email de vérification a été envoyé.' });
     } catch (error) {
