@@ -1,3 +1,4 @@
+const path = require('path'); // Import du module path pour gérer les chemins de fichiers
 const nodemailer = require('nodemailer');
 
 // Créez un transporteur Nodemailer avec Gmail
