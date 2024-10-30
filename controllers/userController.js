@@ -46,7 +46,6 @@ exports.register = async (req, res) => {
 
         // Générer le lien de vérification avec le bon chemin `/users/verify-email`
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
-        const logoUrl = 'logo192.png'; // Remplacez par l'URL du logo
         await sendEmail(
             email,
             '🎉 Bienvenue sur WhisperHub ! Vérifiez votre e-mail pour commencer 🚀',
@@ -61,7 +60,7 @@ exports.register = async (req, res) => {
             <body style="font-family: Arial, sans-serif; color: #333;">
                 <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                     <div style="text-align: center;">
-                        <img src="${logoUrl}" alt="WhisperHub Logo" style="width: 150px; margin-bottom: 20px;">
+                        <img src="cid:logo@whisperhub" alt="WhisperHub Logo" style="width: 150px; margin-bottom: 20px;">
                     </div>
                     <h1 style="color: #1a202c; text-align: center;">Bienvenue sur <span style="color: #E53E3E;">WhisperHub</span>!</h1>
                     <p style="text-align: center; font-size: 1.1em; color: #4A5568;">

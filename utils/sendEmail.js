@@ -15,7 +15,14 @@ const sendEmail = async (to, subject, html) => {
       from: process.env.GMAIL_USER,       // Adresse email d'envoi
       to,                                 // Destinataire
       subject,
-      html                                // Contenu de l'email
+      html,
+      attachments: [
+        {
+          filename: 'logo192.png',
+          path: path.join(__dirname, 'logo192.png'), // Chemin relatif vers le logo
+          cid: 'logo@whisperhub' // cid pour la référence dans le HTML
+        }
+      ]                                // Contenu de l'email
     };
 
     const result = await transporter.sendMail(mailOptions);
