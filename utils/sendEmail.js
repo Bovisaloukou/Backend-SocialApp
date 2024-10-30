@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendEmail = async (to, subject, text) => {
+const sendEmail = async (to, subject, html) => {
   try {
     const mailOptions = {
       from: process.env.GMAIL_USER,       // Adresse email d'envoi
