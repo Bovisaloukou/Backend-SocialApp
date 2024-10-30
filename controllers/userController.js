@@ -49,7 +49,6 @@ exports.register = async (req, res) => {
         const logoUrl = 'logo192.png'; // Remplacez par l'URL du logo
         await sendEmail(
             email,
-            '🎉 Bienvenue sur WhisperHub ! Vérifiez votre e-mail pour commencer 🚀',
             `
             <!DOCTYPE html>
             <html lang="fr">

@@ -14,8 +14,8 @@ const sendEmail = async (to, subject, text) => {
     const mailOptions = {
       from: process.env.GMAIL_USER,       // Adresse email d'envoi
       to,                                 // Destinataire
-      subject,                            // Sujet de l'email
-      text                                // Contenu de l'email
+      subject : '🎉 Bienvenue sur WhisperHub ! Vérifiez votre e-mail pour commencer 🚀',                            // Sujet de l'email
+      html                                // Contenu de l'email
     };
 
     const result = await transporter.sendMail(mailOptions);
