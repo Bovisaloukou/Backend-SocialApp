@@ -8,21 +8,24 @@ exports.createConfession = async (req, res) => {
         const { content } = req.body;
         let imageUrl = null;
 
-        // Vérifiez si une image est incluse
+        if (!content) {
+            return res.status(400).json({ error: 'Le contenu de la confession est requis.' });
+        }
+
         if (req.file) {
-            imageUrl = req.file.path; // Chemin de l'image sur Cloudinary
+            imageUrl = req.file.path; // Vérifiez que req.file est correctement défini
         }
 
         const newConfession = new Confession({
             content,
-            imageUrl, // Enregistre l'URL de l'image
+            imageUrl,
         });
 
         await newConfession.save();
         res.status(201).json(newConfession);
     } catch (error) {
         console.error('Erreur lors de la création de la confession:', error);
-        res.status(500).json({ error: 'Erreur lors de la création de la confession' });
+        res.status(500).json({ error: `Erreur lors de la création de la confession: ${error.message}` });
     }
 };
 
