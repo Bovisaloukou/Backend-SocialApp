@@ -13,7 +13,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: 'confessions', // Nom du dossier dans Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg'],
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'svg'],
   },
 });
 
