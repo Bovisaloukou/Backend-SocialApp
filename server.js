@@ -12,7 +12,7 @@ const app = express();
 
 // Configuration de CORS
 const corsOptions = {
-    origin: 'https://frontend-social-app-eight.vercel.app',  // Autoriser uniquement les requêtes provenant de ton frontend sur Vercel
+    origin: 'https://frontend-social-app-nine.vercel.app',  // Autoriser uniquement les requêtes provenant de ton frontend sur Vercel
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],  // Méthodes HTTP autorisées
     credentials: true,  // Permettre les cookies si nécessaire
   };
